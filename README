@@ -1,0 +1,1 @@
+My ultimate tribute to the Brainf**k programming language. Not only is this C program able to compile and execute Brainf**k efficiently, but it also continues the spirit of Brainf**k by overusing/abusing the infamous black magic in C known as preprocessor-macros, making itself also difficult to read and understand.
