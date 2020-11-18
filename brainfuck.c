@@ -110,7 +110,6 @@ char compile(FILE *stream, unsigned *len) {
                     program[loops->val].param = ptr + 1; \
                     POP(loops) \
                 })
-                break;
         }
 
         com = fgetc(stream);
