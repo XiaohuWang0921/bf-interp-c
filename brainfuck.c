@@ -72,16 +72,6 @@ char compile(FILE *stream, unsigned *len) {
         })
 
     for (;;) {
-        
-        if (com == EOF) {
-            if (loops) {
-                DESTROY(loops)
-                return UNMATCHED_LEFT;
-            } else {
-                *len = ptr;
-                return SUCCESS;
-            }
-        }
 
         switch (com) {
             case '+':
@@ -110,6 +100,14 @@ char compile(FILE *stream, unsigned *len) {
                     program[loops->val].param = ptr + 1; \
                     POP(loops) \
                 })
+            case EOF:
+                if (loops) {
+                    DESTROY(loops)
+                    return UNMATCHED_LEFT;
+                } else {
+                    *len = ptr;
+                    return SUCCESS;
+                }
         }
 
         com = fgetc(stream);
