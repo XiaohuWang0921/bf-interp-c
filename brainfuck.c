@@ -115,11 +115,11 @@ char compile(FILE *stream, unsigned *len) {
 }
 
 char exec(unsigned len) {
-    wchar_t data[CAP] = {};
+    char data[CAP] = {};
     unsigned short data_ptr = 0;
     unsigned prog_ptr = 1;
     short repeat;
-    wint_t c;
+    int c;
 
     while (prog_ptr <= len) {
         switch (program[prog_ptr].op) {
@@ -132,7 +132,7 @@ char exec(unsigned len) {
             case ',':
                 repeat = program[prog_ptr++].param;
                 for (int i = 0; i < repeat; i++) {
-                    c = getwchar();
+                    c = getchar();
                     if (c == WEOF)
                         return INPUT_FAIL;
                     else
@@ -142,7 +142,7 @@ char exec(unsigned len) {
             case '.':
                 repeat = program[prog_ptr++].param;
                 for (int i = 0; i < repeat; i++) {
-                    if (putwchar(data[data_ptr]) == WEOF)
+                    if (putchar(data[data_ptr]) == EOF)
                         return OUTPUT_FAIL;
                 }
                 break;
