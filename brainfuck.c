@@ -23,29 +23,68 @@
     "          If omitted the script will be read from stdin.\n" \
     "  -h      Display this help message and quit.\n"
 
+#ifdef __cplusplus
+
+struct Command {
+    char op;
+    short param;
+};
+
+#else
+
 typedef struct {
     char op;
     short param;
-} command;
+} Command;
 
-typedef struct stack {
+#endif
+
+#ifdef __cplusplus
+
+struct Stack {
     unsigned short val;
-    struct stack *next;
-} *stack;
+    Stack *next;
 
-static stack tmp;
+    Stack(unsigned short v, Stack *st) {
+        val = v;
+        next = st;
+    }
+};
 
-#define PUSH(VAL, ST) { tmp = malloc(sizeof(struct stack)); tmp->val = VAL; tmp->next = ST; ST = tmp; }
+static Stack *tmp;
+
+#define PUSH(VAL, ST) ST = new Stack(VAL, ST);
+
+#define POP(ST) { tmp = ST->next; delete ST; ST = tmp; }
+
+#else
+
+typedef struct Stack {
+    unsigned short val;
+    struct Stack *next;
+} *Stack;
+
+static Stack tmp;
+
+#define PUSH(VAL, ST) { tmp = malloc(sizeof(struct Stack)); tmp->val = VAL; tmp->next = ST; ST = tmp; }
 
 #define POP(ST) { tmp = ST->next; free(ST); ST = tmp; }
 
+#endif
+
 #define DESTROY(ST) { while (ST) POP(ST) }
 
-static command program[CAP + 1] = {};
+static Command program[CAP + 1] = {};
 
 char compile(FILE *stream, unsigned *len) {
     unsigned ptr = 0;
-    stack loops = NULL;
+
+#   ifdef __cplusplus
+    Stack *loops = NULL;
+#   else
+    Stack loops = NULL;
+#   endif
+
     char com = fgetc(stream);
 
 #   define MOD_true ++
