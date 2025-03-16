@@ -30,17 +30,6 @@ struct Command {
     short param;
 };
 
-#else
-
-typedef struct {
-    char op;
-    short param;
-} Command;
-
-#endif
-
-#ifdef __cplusplus
-
 struct Stack {
     unsigned short val;
     Stack *next;
@@ -51,20 +40,21 @@ struct Stack {
     }
 };
 
-static Stack *tmp;
-
 #define PUSH(VAL, ST) ST = new Stack(VAL, ST);
 
 #define POP(ST) { tmp = ST->next; delete ST; ST = tmp; }
 
 #else
 
+typedef struct {
+    char op;
+    short param;
+} Command;
+
 typedef struct Stack {
     unsigned short val;
     struct Stack *next;
-} *Stack;
-
-static Stack tmp;
+} Stack;
 
 #define PUSH(VAL, ST) { tmp = malloc(sizeof(struct Stack)); tmp->val = VAL; tmp->next = ST; ST = tmp; }
 
@@ -74,16 +64,14 @@ static Stack tmp;
 
 #define DESTROY(ST) { while (ST) POP(ST) }
 
+static Stack *tmp;
+
 static Command program[CAP + 1] = {};
 
 char compile(FILE *stream, unsigned *len) {
     unsigned ptr = 0;
 
-#   ifdef __cplusplus
     Stack *loops = NULL;
-#   else
-    Stack loops = NULL;
-#   endif
 
     char com = fgetc(stream);
 
